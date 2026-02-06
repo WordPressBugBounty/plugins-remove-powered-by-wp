@@ -1,11 +1,13 @@
 <?php
 /*
  * Plugin Name: Remove "Powered by WordPress"
- * Version: 1.6.1
+ * Version: 1.6.2
  * Plugin URI: https://webd.uk/product/support-us/
  * Description: Removes the WordPress credit on all default WordPress themes and inserts a widget area
  * Author: Webd Ltd
  * Author URI: https://webd.uk
+ * License: GPLv2 or later
+ * License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * Text Domain: remove-powered-by-wp
  */
 
@@ -15,7 +17,7 @@ if (!class_exists('remove_powered_by_wp_class')) {
 
 	class remove_powered_by_wp_class {
 
-        public static $version = '1.6.1';
+        public static $version = '1.6.2';
 
         public static $rpbw_compatible_themes = array(
             'Inspiro' => 'inspiro',
@@ -105,13 +107,16 @@ if (!class_exists('remove_powered_by_wp_class')) {
 
                     $wp_customize->add_section('more_theme_options', array(
                         'title'     => __('More Theme Options', 'remove-powered-by-wp'),
+/* translators: theme name */
                         'description'  => sprintf(__('Would you like even more options and features for your theme %s?', 'remove-powered-by-wp'), $key),
                         'priority'     => 0
                     ));
 
-                    rpbwCommon::add_hidden_control($wp_customize, 'install_' . $value, 'more_theme_options', __('Options for ' . $key), 
-                    
-                    sprintf(wp_kses(__('<a href="%s" class="button">Install Options for %s Plugin</a>', 'remove-powered-by-wp'), array('a' => array('href' => array(), 'class' => array()))), esc_url(add_query_arg(array(
+/* translators: theme name */
+                    rpbwCommon::add_hidden_control($wp_customize, 'install_' . $value, 'more_theme_options', sprintf(__('Options for %s', 'remove-powered-by-wp'), $key), 
+
+/* translators: link to plugin installer, theme name */
+                    sprintf(wp_kses(__('<a href="%1$s" class="button">Install Options for %2$s Plugin</a>', 'remove-powered-by-wp'), array('a' => array('href' => array(), 'class' => array()))), esc_url(add_query_arg(array(
                             's' => $value . ' please our modification',
                             'tab' => 'search',
                             'type' => 'term'
@@ -666,17 +671,22 @@ if (!class_exists('remove_powered_by_wp_class')) {
                 'Twenty Twenty One' => 'twentytwentyone'
             ) as $key => $value) {
 
-                if (get_template() == $value) {
+                if ($value === get_template()) {
 
                     echo '<p>';
                     printf(
-                        __('You are using %s theme so you should try %s plugin which has loads more options and features!', 'remove-powered-by-wp'),
-                        '<strong>' . $key . '</strong>',
-                        '<strong><a href="' . add_query_arg(array(
+                        wp_kses(
+/* translators: theme name, theme name linked to plugin installer */
+                            __('You are using %1$s theme so you should try %2$s plugin which has loads more options and features!', 'remove-powered-by-wp'),
+                            array('a' => array('href' => array(), 'title' => array()), 'strong' => array())
+                        ),
+                        '<strong>' . esc_html($key) . '</strong>',
+                        '<strong><a href="' . esc_url(add_query_arg(array(
                             's' => $value . ' please our modification',
                             'tab' => 'search',
                             'type' => 'term'
-                        ), admin_url('plugin-install.php')) . '" title="' . __('Options for ' . $key, 'remove-powered-by-wp') . '">' . __('Options for ' . $key, 'remove-powered-by-wp') . '</a></strong>'
+/* translators: theme name */
+                        ), admin_url('plugin-install.php'))) . '" title="' . sprintf(esc_attr(__('Options for %s', 'remove-powered-by-wp')), esc_attr($key)) . '">' . sprintf(esc_html(__('Options for %s', 'remove-powered-by-wp')), esc_html($key)) . '</a></strong>'
                     );
                     echo '</p>';
 
@@ -881,19 +891,20 @@ if (!class_exists('remove_powered_by_wp_class')) {
 <?php
 
         printf(
-            __('This plugin requires one of the compatible themes to be active or live previewed in order to function. Your theme "%s" is not compatible. Please install and activate or live preview one of these themes (or a child theme thereof):', 'remove-powered-by-wp'),
-            get_template()
+/* translators: theme slug */
+            esc_html(__('This plugin requires one of the compatible themes to be active or live previewed in order to function. Your theme "%s" is not compatible. Please install and activate or live preview one of these themes (or a child theme thereof):', 'remove-powered-by-wp')),
+            esc_html(get_template())
         );
 
         $theme_list = array();
 
         foreach (remove_powered_by_wp_class::$rpbw_compatible_themes as $key => $value) {
 
-            $theme_list[] = '<a href="' . add_query_arg('search', $value, admin_url('theme-install.php')) . '" title="' .  __($key, 'remove-powered-by-wp') . '">' .  __($key, 'remove-powered-by-wp') . '</a>';
+            $theme_list[] = '<a href="' . add_query_arg('search', $value, admin_url('theme-install.php')) . '" title="' . esc_attr($key) . '">' .  esc_html($key) . '</a>';
 
         }
 
-        echo ' ' . implode(', ', $theme_list) . '.';
+        echo esc_html(' ' . implode(', ', $theme_list) . '.');
 
 ?></p>
 </div>

@@ -3,9 +3,9 @@ Contributors: domainsupport
 Donate link: https://webd.uk/product/support-us/
 Tags: twentytwentyone, twentytwenty, twentyseventeen, customize, modify
 Requires at least: 4.6
-Tested up to: 6.6
+Tested up to: 6.9
 Requires PHP: 5.6
-Stable tag: 1.6.1
+Stable tag: 1.6.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -65,6 +65,9 @@ Easily remove the WordPress credit on the default WordPress theme ...
 == Frequently Asked Questions ==
 
 == Changelog ==
+
+= 1.6.2 =
+* General housekeeping preparing for "Plugin Check" code review
 
 = 1.6.1 =
 * Added compatibility for GeneratePress theme
@@ -206,5 +209,5 @@ Easily remove the WordPress credit on the default WordPress theme ...
 
 == Upgrade Notice ==
 
-= 1.6.1 =
-* Added compatibility for GeneratePress theme
+= 1.6.2 =
+* General housekeeping preparing for "Plugin Check" code review
