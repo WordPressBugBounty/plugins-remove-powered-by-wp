@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Remove "Powered by WordPress"
- * Version: 1.6.2
+ * Version: 1.6.3
  * Plugin URI: https://webd.uk/product/support-us/
  * Description: Removes the WordPress credit on all default WordPress themes and inserts a widget area
  * Author: Webd Ltd
@@ -13,11 +13,17 @@
 
 
 
+if (!defined('ABSPATH')) {
+    exit('This isn\'t the page you\'re looking for. Move along, move along.');
+}
+
+
+
 if (!class_exists('remove_powered_by_wp_class')) {
 
 	class remove_powered_by_wp_class {
 
-        public static $version = '1.6.2';
+        public static $version = '1.6.3';
 
         public static $rpbw_compatible_themes = array(
             'Inspiro' => 'inspiro',

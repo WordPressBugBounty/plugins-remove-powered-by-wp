@@ -1,7 +1,13 @@
 <?php
 /*
- * Version: 1.4
+ * Version: 1.4.5
  */
+
+
+
+if (!defined('ABSPATH')) {
+    exit('This isn\'t the page you\'re looking for. Move along, move along.');
+}
 
 
 
@@ -237,12 +243,16 @@ if (!class_exists('rpbwCommon')) {
             if ($mod && $value === '') {
 
                 $generated_css = sprintf('%s { %s: %s; }', $selector, $style, $prefix.$mod.$postfix);
-                echo wp_kses($generated_css, 'strip');
+
+// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                echo wp_strip_all_tags($generated_css);
 
             } elseif ($mod) {
 
                 $generated_css = sprintf('%s { %s:%s; }', $selector, $style, $prefix.$value.$postfix);
-                echo wp_kses($generated_css, 'strip');
+
+// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                echo wp_strip_all_tags($generated_css);
 
             }
 
@@ -368,7 +378,11 @@ if (!class_exists('rpbwCommon')) {
 
             if (self::$plugin_premium_class) {
 
-                if (get_option(self::$plugin_prefix . '_purchased') && !class_exists(self::$plugin_premium_class) && get_user_meta(get_current_user_id(), self::$plugin_prefix . '-notice-dismissed', true) != self::plugin_version()) {
+                if (
+                    get_option(self::$plugin_prefix . '_purchased') &&
+                    !class_exists(self::$plugin_premium_class) &&
+                    get_user_meta(get_current_user_id(), self::$plugin_prefix . '-notice-dismissed', true) != self::plugin_version()
+                ) {
 
 ?>
 
@@ -397,48 +411,79 @@ echo esc_url(self::premium_link()); ?>" title="<?php echo esc_attr(sprintf(__('D
 
 <?php
 
-                } elseif (!class_exists(self::$plugin_premium_class) && time() > (strtotime('+1 hour', filectime(__DIR__))) && get_user_meta(get_current_user_id(), self::$plugin_prefix . '-notice-dismissed', true) != self::plugin_version()) {
+                } elseif (
+                    !class_exists(self::$plugin_premium_class) &&
+                    time() > (strtotime('+1 hour', filectime(__DIR__))) &&
+                    get_user_meta(get_current_user_id(), self::$plugin_prefix . '-notice-dismissed', true) != self::plugin_version()
+                ) {
 
 ?>
 
 <div class="notice notice-info is-dismissible <?php echo esc_attr(self::$plugin_prefix); ?>-notice">
 
-<p><strong><?php
+    <p style="font-size:15px;"><strong><?php
 /* translators: name of the plugin */
-printf(esc_html(__('Thank you for using %s plugin', 'remove-powered-by-wp')), esc_html(self::$plugin_name)); ?></strong><br />
+printf(esc_html(__('Thank you for using %s plugin', 'remove-powered-by-wp')), esc_html(self::$plugin_name)); ?></strong></p>
 <?php
 
                     if (self::$plugin_trial == true) {
 
-                        echo esc_html(__('Would you like to try even more features? Download your 7 day free trial now!', 'remove-powered-by-wp')); 
+?>
+
+    <p><?php echo esc_html(__('Would you like to try even more features? Download your 7 day free trial now!', 'remove-powered-by-wp')); ?></p>
+<?php
 
                     } else {
 
-/* translators: name of the plugin */
-                        echo esc_html(sprintf(__('Upgrade now to %s Premium to enable more options and features and contribute to the further development of this plugin.', 'remove-powered-by-wp'), self::$plugin_name));
-
-                    }
-
-?></p>
-
-<p><?php
-
-                    if (self::$plugin_trial == true) {
-
 ?>
 
-<a href="<?php echo esc_url(self::premium_link()); ?>" title="<?php
+    <p>
+        <?php
 /* translators: name of the plugin */
-echo esc_attr(sprintf(__('Try %s Premium', 'remove-powered-by-wp'), self::$plugin_name)); ?>" class="button-primary"><?php printf(esc_html(__('Trial %s Premium for 7 days', 'remove-powered-by-wp'), self::$plugin_name)); ?></a>
-
+                        echo esc_html(sprintf(__('Upgrade now to %s Premium to enable more options and features and contribute to the further development of this plugin.', 'remove-powered-by-wp'), self::$plugin_name)); ?>
+    </p>
 <?php
 
                     }
 
 ?>
-<a href="<?php echo esc_url(self::upgrade_link()); ?>" title="<?php
+
+    <p><?php
+
+                    if (self::$plugin_trial == true) {
+
+?>
+
+        <a href="<?php echo esc_url(self::premium_link()); ?>" 
+           title="<?php
 /* translators: name of the plugin */
-echo esc_attr(sprintf(__('Upgrade now to %s Premium', 'remove-powered-by-wp'), self::$plugin_name)); ?>" class="button-primary"><?php printf(esc_html(__('Upgrade now to %s Premium', 'remove-powered-by-wp')), esc_html(self::$plugin_name)); ?></a></p>
+echo esc_attr(sprintf(__('Try %s Premium', 'remove-powered-by-wp'), self::$plugin_name)); ?>" 
+           class="button-secondary">
+           <?php echo esc_html(__('Try premium plugin free for 7 days', 'remove-powered-by-wp')); ?>
+        </a>
+<?php
+
+                    }
+
+?>
+
+        <a href="<?php echo esc_url(self::upgrade_link()); ?>" 
+           title="<?php
+/* translators: name of the plugin */
+echo esc_attr(sprintf(__('Upgrade now to %s Premium', 'remove-powered-by-wp'), self::$plugin_name)); ?>" 
+           class="button-primary">
+           <?php echo esc_html(__('Upgrade now to premium plugin', 'remove-powered-by-wp')); ?>
+        </a>
+
+    </p>
+
+    <hr style="margin:12px 0;">
+
+    <p>
+        <strong>✨ Need help with your WordPress site?</strong>
+        🚀 Slow, want new features, or need a glow-up?
+        <a href="https://webd.uk/services/?utm_campaign=notice&utm_term=remove-powered-by-wp" class="button-secondary" style="margin-left:6px; vertical-align: middle;">Explore our services</a>
+    </p>
 
 </div>
 
@@ -459,7 +504,7 @@ echo esc_attr(sprintf(__('Upgrade now to %s Premium', 'remove-powered-by-wp'), s
                 }
 
             } elseif (
-//                time() > (strtotime('+1 hour', filectime(__DIR__))) &&
+                time() > (strtotime('+1 hour', filectime(__DIR__))) &&
                 get_user_meta(get_current_user_id(), self::$plugin_prefix . '-notice-dismissed', true) != self::plugin_version() &&
                 !get_option(self::$plugin_prefix . '_donated')
             ) {
@@ -467,7 +512,8 @@ echo esc_attr(sprintf(__('Upgrade now to %s Premium', 'remove-powered-by-wp'), s
 ?>
 
 <div class="notice notice-info is-dismissible <?php echo esc_attr(self::$plugin_prefix); ?>-notice">
-<p><strong><?php
+
+    <p><strong><?php
 /* translators: name of the plugin */
 printf(esc_html(__('Thank you for using %s plugin', 'remove-powered-by-wp')), esc_html(self::$plugin_name)); ?></strong></p>
 <?php
@@ -476,10 +522,21 @@ printf(esc_html(__('Thank you for using %s plugin', 'remove-powered-by-wp')), es
                 do_action(self::$plugin_prefix . '_admin_notice_donate');
 
 ?>
-<p><?php esc_html_e('Funding plugins like this one with small financial contributions is essential to pay the developers to continue to do what they do. Please take a moment to give a small amount ...', 'remove-powered-by-wp'); ?></p>
-<p><a href="<?php echo esc_url(self::upgrade_link()); ?>" title="<?php
+
+    <p><?php esc_html_e('Funding plugins like this one with small financial contributions is essential to pay the developers to continue to do what they do. Please take a moment to give a small amount ...', 'remove-powered-by-wp'); ?></p>
+
+    <p><a href="<?php echo esc_url(self::upgrade_link()); ?>" title="<?php
 /* translators: name of the plugin */
-echo esc_attr(sprintf(__('Contribute to %s', 'remove-powered-by-wp'), self::$plugin_name)); ?>" class="button-primary"><?php printf(esc_html(__('Contribute to %s', 'remove-powered-by-wp')), esc_html(self::$plugin_name)); ?></a> <a href="#" id="<?php echo esc_attr(self::$plugin_prefix); ?>-already-paid" title="<?php echo esc_attr(__('Aleady Contributed!', 'remove-powered-by-wp')); ?>" class="button-primary"><?php esc_html_e('Aleady Contributed!', 'remove-powered-by-wp'); ?></a></p>
+echo esc_attr(sprintf(__('Contribute to %s', 'remove-powered-by-wp'), self::$plugin_name)); ?>" class="button-primary"><?php echo esc_html(__('Buy us a coffee ☕️', 'remove-powered-by-wp')); ?></a> <a href="#" id="<?php echo esc_attr(self::$plugin_prefix); ?>-already-paid" title="<?php echo esc_attr(__('Aleady Contributed!', 'remove-powered-by-wp')); ?>" class="button-secondary"><?php esc_html_e('Aleady Contributed!', 'remove-powered-by-wp'); ?></a></p>
+
+    <hr style="margin:12px 0;">
+
+    <p>
+        <strong>✨ Need help with your WordPress site?</strong>
+        🚀 Slow, want new features, or need a glow-up?
+        <a href="https://webd.uk/services/?utm_campaign=notice&utm_term=remove-powered-by-wp" class="button-secondary" style="margin-left:6px; vertical-align: middle;">Explore our services</a>
+    </p>
+
 </div>
 
 <script type="text/javascript">
@@ -638,10 +695,12 @@ echo esc_attr(sprintf(__('Contribute to %s', 'remove-powered-by-wp'), self::$plu
 
 if (!function_exists('webd_customize_register')) {
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedFunctionFound
 	function webd_customize_register($wp_customize) {
 
 		if (!class_exists('webd_Customize_Control_Checkbox_Multiple')) {
 
+// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound
 		    class webd_Customize_Control_Checkbox_Multiple extends WP_Customize_Control {
 
 		        public $type = 'webd-checkbox-multiple';

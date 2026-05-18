@@ -3,9 +3,9 @@ Contributors: domainsupport
 Donate link: https://webd.uk/product/support-us/
 Tags: twentytwentyone, twentytwenty, twentyseventeen, customize, modify
 Requires at least: 4.6
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 5.6
-Stable tag: 1.6.2
+Stable tag: 1.6.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,7 +16,7 @@ Removes the WordPress credit on all default WordPress themes and replaces with a
 
 This plugin removes the "Proudly powered by WordPress" for those who want to use the default theme for their website but don't want everyone to know what they've used to build it. Content can then be added in its place with a new "Site Info" widget area on some themes.
 
-For block themes, you do not need to use this plugin, just edit the footer template in the Site Editor. We do have a plugin, [Options for Block Themes](https://wordpress.org/plugins/template-editor/ "Options for Block Themes"), that adds additional features and options to block themes.
+*This plugin is not for block themes*. For block themes, you do not need to use this plugin, just edit the footer template in the Site Editor. You can ignore this and try to use the plugin with block themes anyway but we don't advise it because [it can make you very angry if you do](https://wordpress.org/support/topic/warning-does-not-work-with-themes-beyond-2021/ "Angry plugin review"). We do have a plugin, [Options for Block Themes](https://wordpress.org/plugins/template-editor/ "Options for Block Themes"), that adds additional features and options to block themes.
 
 This plugin works on all classic default WordPress themes (and child themes) including ...
 
@@ -65,6 +65,9 @@ Easily remove the WordPress credit on the default WordPress theme ...
 == Frequently Asked Questions ==
 
 == Changelog ==
+
+= 1.6.3 =
+* Fix a minor issue highlighted by "Plugin Check" code review and preparing for WordPress v7.0
 
 = 1.6.2 =
 * General housekeeping preparing for "Plugin Check" code review
@@ -209,5 +212,5 @@ Easily remove the WordPress credit on the default WordPress theme ...
 
 == Upgrade Notice ==
 
-= 1.6.2 =
-* General housekeeping preparing for "Plugin Check" code review
+= 1.6.3 =
+* Fix a minor issue highlighted by "Plugin Check" code review and preparing for WordPress v7.0
